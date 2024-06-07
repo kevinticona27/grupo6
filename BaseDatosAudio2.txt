@@ -1,0 +1,389 @@
+-- Crear base de datos
+CREATE DATABASE musica;
+USE musica;
+
+-- Crear tablas
+CREATE TABLE Album (
+    ID_Album INT NOT NULL AUTO_INCREMENT,
+    Artista_ID_Artista INT NOT NULL,
+    Nombre_Album VARCHAR(50) NOT NULL,
+    Fecha_Lanzamiento DATE NOT NULL,
+    CONSTRAINT Album_pk PRIMARY KEY (ID_Album, Artista_ID_Artista)
+);
+
+CREATE TABLE Artista (
+    ID_Artista INT NOT NULL AUTO_INCREMENT,
+    Nombre VARCHAR(50) NOT NULL,
+    Seudonimo VARCHAR(50) NOT NULL,
+    Nacionalidad VARCHAR(20) NOT NULL,
+    Fecha_Nacimiento DATE NOT NULL,
+    CONSTRAINT Artista_pk PRIMARY KEY (ID_Artista)
+);
+
+CREATE TABLE Canciones (
+    ID_Cancion INT NOT NULL AUTO_INCREMENT,
+    Nombre_Cancion VARCHAR(50) NOT NULL,
+    Album_ID_Album INT NOT NULL ,
+    Album_Artista_ID_Artista INT NOT NULL,
+    Fecha_Lanzamiento DATE NOT NULL,
+    Audio BLOB,
+    CONSTRAINT Canciones_pk PRIMARY KEY (ID_Cancion)
+);
+
+CREATE TABLE Canciones_Escuchadas (
+    Canciones_ID_Cancion INT NOT NULL,
+    Fecha DATE NOT NULL,
+    Usuario_ID_Usuario INT NOT NULL,
+    CONSTRAINT Canciones_Escuchadas_pk PRIMARY KEY (Canciones_ID_Cancion)
+);
+
+CREATE TABLE Canciones_Lista_Reproduccion (
+    Canciones_ID_Cancion INT NOT NULL,
+    Listas_Reproduccion_ID INT NOT NULL,
+    CONSTRAINT Canciones_Lista_Reproduccio_pk PRIMARY KEY (Canciones_ID_Cancion, Listas_Reproduccion_ID)
+);
+
+CREATE TABLE Listas_de_Reproduccion (
+    ID_Lista INT NOT NULL AUTO_INCREMENT,
+    Nombre_Lista VARCHAR(50) NOT NULL,
+    Usuario_ID_Usuario INT NOT NULL,
+    CONSTRAINT Listas_de_Reproduccion_pk PRIMARY KEY (ID_Lista)
+);
+
+CREATE TABLE Usuario (
+    ID_Usuario INT NOT NULL AUTO_INCREMENT,
+    Nombre VARCHAR(50) NOT NULL,
+    Correo_Electronico VARCHAR(255) NOT NULL,
+    Fecha_Creacion DATE NOT NULL,
+    CONSTRAINT Usuario_pk PRIMARY KEY (ID_Usuario)
+);
+
+-- Claves foráneas
+ALTER TABLE Album ADD CONSTRAINT Album_Artista
+    FOREIGN KEY (Artista_ID_Artista)
+    REFERENCES Artista (ID_Artista) ON DELETE cascade;
+
+ALTER TABLE Canciones ADD CONSTRAINT Canciones_Album
+    FOREIGN KEY (Album_ID_Album, Album_Artista_ID_Artista)
+    REFERENCES Album (ID_Album, Artista_ID_Artista) ON DELETE cascade;
+
+ALTER TABLE Canciones_Escuchadas ADD CONSTRAINT Canciones_Escuchadas_Canciones
+    FOREIGN KEY (Canciones_ID_Cancion)
+    REFERENCES Canciones (ID_Cancion) ON DELETE cascade;
+
+ALTER TABLE Canciones_Escuchadas ADD CONSTRAINT Canciones_Escuchadas_Usuario
+    FOREIGN KEY (Usuario_ID_Usuario)
+    REFERENCES Usuario (ID_Usuario) ON DELETE cascade;
+
+ALTER TABLE Canciones_Lista_Reproduccion ADD CONSTRAINT Canciones_Lista_Reproduccion
+    FOREIGN KEY (Canciones_ID_Cancion)
+    REFERENCES Canciones (ID_Cancion) ON DELETE cascade;
+
+ALTER TABLE Canciones_Lista_Reproduccion ADD CONSTRAINT Canciones_Listas_Reproduccion
+    FOREIGN KEY (Listas_Reproduccion_ID)
+    REFERENCES Listas_de_Reproduccion (ID_Lista);
+
+ALTER TABLE Listas_de_Reproduccion ADD CONSTRAINT Listas_de_Reproduccion_Usuario
+    FOREIGN KEY (Usuario_ID_Usuario)
+    REFERENCES Usuario (ID_Usuario) ON DELETE cascade;
+
+
+
+INSERT INTO Usuario (ID_Usuario, Nombre, Correo_Electronico, Fecha_Creacion) VALUES 
+(1, 'Juan ', 'juan@gmail.com', '2024-05-26');
+
+
+-- Datos para la tabla Artista
+INSERT INTO Artista (ID_Artista, Nombre, Seudonimo, Nacionalidad, Fecha_Nacimiento) VALUES 
+(1, 'Calvin Cordozar Broadus Jr.', 'Snoop Dogg', 'Estados Unidos', '1971-10-20'),
+(2, 'Marshall Bruce Mathers III', 'Eminem', 'Estados Unidos', '1972-10-17'),
+(3, 'Tupac Amaru Shakur', '2Pac', 'Estados Unidos', '1971-06-16'),
+(4, 'Benito Antonio Martínez Ocasio', 'Bad Bunny', 'Puerto Rico', '1994-03-10'),
+(5, 'Jacques Berman Webster II', 'Travis Scott', 'Estados Unidos', '1991-04-30'),
+(6, 'Nayvadius DeMun Wilburn', 'Future', 'Estados Unidos', '1983-11-20'),
+(7, 'BTS', 'BTS', 'Corea del Sur', '2013-06-13'),
+(8, 'BLACKPINK', 'BLACKPINK', 'Corea del Sur', '2016-08-08'),
+(9, 'EXO', 'EXO', 'Corea del Sur', '2012-04-08'),
+(10, 'Queen', 'Queen', 'Reino Unido', '1970-01-01'),
+(11, 'The Rolling Stones', 'The Rolling Stones', 'Reino Unido', '1962-01-01'),
+(12, 'Nirvana', 'Nirvana', 'Estados Unidos', '1987-01-01'),
+(13, 'Daft Punk', 'Daft Punk', 'Francia', '1993-01-01'),
+(14, 'Calvin Harris', 'Calvin Harris', 'Reino Unido', '1984-01-17'),
+(15, 'The Chemical Brothers', 'The Chemical Brothers', 'Reino Unido', '1989-01-01'),
+(16, 'Taylor Swift', 'Taylor Swift', 'Estados Unidos', '1989-12-13'),
+(17, 'Ariana Grande', 'Ariana Grande', 'Estados Unidos', '1993-06-26'),
+(18, 'Justin Bieber', 'Justin Bieber', 'Canadá', '1994-03-01'),
+(19, 'Ramón Luis Ayala Rodríguez', 'Daddy Yankee', 'Puerto Rico', '1977-02-03'),
+(20, 'J Balvin', 'J Balvin', 'Colombia', '1985-05-07'),
+(21, 'Juan Carlos Ozuna Rosado', 'Ozuna', 'Puerto Rico', '1992-03-01'),
+(22, 'Robert Nesta Marley', 'Bob Marley', 'Jamaica', '1945-02-06'),
+(23, 'Damian Robert Nesta Marley', 'Damian Marley', 'Jamaica', '1978-07-21'),
+(24, 'David Nesta Marley', 'Ziggy Marley', 'Jamaica', '1968-10-17'),
+(25, 'Marc Anthony', 'Marc Anthony', 'Estados Unidos', '1968-09-16'),
+(26, 'Úrsula Hilaria Celia de la Caridad Cruz Alfonso', 'Celia Cruz', 'Cuba', '1925-10-21'),
+(27, 'Héctor Juan Pérez Martínez', 'Héctor Lavoe', 'Puerto Rico', '1946-09-30'),
+(28, 'Ludwig van Beethoven', 'Beethoven', 'Alemania', '1770-12-17'),
+(29, 'Johannes Chrysostomus Wolfgangus Theophilus Mozart', 'Mozart', 'Austria', '1756-01-27'),
+(30, 'Johann Sebastian Bach', 'Bach', 'Alemania', '1685-03-31');
+
+
+-- Datos para la tabla Album
+INSERT INTO Album (ID_Album, Artista_ID_Artista, Nombre_Album, Fecha_Lanzamiento) VALUES 
+(1, 1, 'Doggystyle', '1993-11-23'),
+(2, 2, 'The Eminem Show', '2002-05-26'),
+(3, 3, 'All Eyez on Me', '1996-02-13'),
+(4, 4, 'X 100PRE', '2018-12-24'),
+(5, 5, 'Astroworld', '2018-08-03'),
+(6, 6, 'Future', '2017-02-17'),
+(7, 7, 'Map of the Soul: 7', '2020-02-21'),
+(8, 8, 'Kill This Love', '2019-04-05'),
+(9, 9, 'Don’t Mess Up My Tempo', '2018-11-02'),
+(10, 10, 'A Night at the Opera', '1975-11-21'),
+(11, 11, 'Beggars Banquet', '1968-12-06'),
+(12, 12, 'Nevermind', '1991-09-24'),
+(13, 13, 'Random Access Memories', '2013-05-17'),
+(14, 14, 'Motion', '2014-10-31'),
+(15, 15, 'Dig Your Own Hole', '1997-04-07'),
+(16, 16, '1989', '2014-10-27'),
+(17, 17, 'Thank U, Next', '2019-02-08'),
+(18, 18, 'Purpose', '2015-11-13'),
+(19, 19, 'Barrio Fino', '2004-07-13'),
+(20, 20, 'Energía', '2016-06-24'),
+(21, 21, 'Odisea', '2017-08-25'),
+(22, 22, 'Legend', '1984-05-08'),
+(23, 23, 'Welcome to Jamrock', '2005-09-12'),
+(24, 24, 'Love Is My Religion', '2006-07-02'),
+(25, 25, 'Amar Sin Mentiras', '2004-06-08'),
+(26, 26, 'Azúcar Negra', '1993-01-01'),
+(27, 27, 'El Cantante', '1978-01-01'),
+(28, 28, 'Sinfonía No. 9', '1824-05-07'),
+(29, 29, 'Requiem', '1791-12-05'),
+(30, 30, 'Conciertos de Brandeburgo', '1721-03-24');
+
+
+-- Datos para la tabla Canciones
+INSERT INTO Canciones (ID_Cancion, Nombre_Cancion, Album_ID_Album, Album_Artista_ID_Artista, Fecha_Lanzamiento) VALUES 
+(1, 'Gin and Juice', 1, 1, '1994-01-15'),
+(2, 'Drop It Like It’s Hot', 1, 1, '2004-09-12'),
+(3, 'Nuthin’ but a ‘G’ Thang', 1, 1, '1992-11-19'),
+(4, 'Lose Yourself', 2, 2, '2002-10-22'),
+(5, 'Stan', 2, 2, '2000-11-21'),
+(6, 'Love the Way You Lie', 2, 2, '2010-06-25'),
+(7, 'California Love', 3, 3, '1995-12-03'),
+(8, 'Changes', 3, 3, '1998-10-13'),
+(9, 'Dear Mama', 3, 3, '1995-02-21'),
+(10, 'Soy Peor', 4, 4, '2017-12-01'),
+(11, 'Vete', 4, 4, '2019-11-21'),
+(12, 'Callaita', 4, 4, '2019-05-31'),
+(13, 'Sicko Mode', 5, 5, '2018-08-03'),
+(14, 'Goosebumps', 5, 5, '2016-09-02'),
+(15, 'Stargazing', 5, 5, '2018-08-03'),
+(16, 'Mask Off', 6, 6, '2017-02-17'),
+(17, 'Life Is Good', 6, 6, '2020-01-10'),
+(18, 'Low Life', 6, 6, '2016-03-24'),
+(19, 'Dynamite', 7, 7, '2020-08-21'),
+(20, 'Boy With Luv', 7, 7, '2019-04-12'),
+(21, 'Fake Love', 7, 7, '2018-05-18'),
+(22, 'How You Like That', 8, 8, '2020-06-26'),
+(23, 'Kill This Love', 8, 8, '2019-04-05'),
+(24, 'DDU-DU DDU-DU', 8, 8, '2018-06-15'),
+(25, 'Love Shot', 9, 9, '2018-12-13'),
+(26, 'Monster', 9, 9, '2016-12-19'),
+(27, 'Tempo', 9, 9, '2018-11-02'),
+(28, 'Bohemian Rhapsody', 10, 10, '1975-10-31'),
+(29, 'We Will Rock You', 10, 10, '1977-10-07'),
+(30, 'Another One Bites the Dust', 10, 10, '1980-08-22'),
+(31, 'Paint It Black', 11, 11, '1966-05-07'),
+(32, 'Angie', 11, 11, '1973-08-20'),
+(33, 'Sympathy for the Devil', 11, 11, '1968-12-06'),
+(34, 'Smells Like Teen Spirit', 12, 12, '1991-09-10'),
+(35, 'Come as You Are', 12, 12, '1991-09-10'),
+(36, 'Lithium', 12, 12, '1991-09-10'),
+(37, 'Get Lucky', 13, 13, '2013-04-19'),
+(38, 'One More Time', 13, 13, '2000-11-13'),
+(39, 'Harder, Better, Faster, Stronger', 13, 13, '2001-10-13'),
+(40, 'Summer', 14, 14, '2014-03-14'),
+(41, 'Blame', 14, 14, '2014-09-05'),
+(42, 'Feel So Close', 14, 14, '2011-08-19'),
+(43, 'Block Rockin’ Beats', 15, 15, '1997-03-24'),
+(44, 'Galvanize', 15, 15, '2004-11-22'),
+(45, 'Hey Boy Hey Girl', 15, 15, '1999-05-17'),
+(46, 'Shake It Off', 16, 16, '2014-08-18'),
+(47, 'Blank Space', 16, 16, '2014-11-10'),
+(48, 'Love Story', 16, 16, '2008-09-12'),
+(49, '7 Rings', 17, 17, '2019-01-18'),
+(50, 'Thank U, Next', 17, 17, '2018-11-03'),
+(51, 'Positions', 17, 17, '2020-10-23'),
+(52, 'Sorry', 18, 18, '2015-10-23'),
+(53, 'Love Yourself', 18, 18, '2015-11-09'),
+(54, 'Peaches', 18, 18, '2021-03-19'),
+(55, 'Gasolina', 19, 19, '2004-07-13'),
+(56, 'Dura', 19, 19, '2018-01-18'),
+(57, 'Con Calma', 19, 19, '2019-01-24'),
+(58, 'Safari', 20, 20, '2016-08-19'),
+(59, 'Mi Gente', 20, 20, '2017-06-30'),
+(60, 'Blanco', 20, 20, '2019-11-15'),
+(61, 'Taki Taki', 21, 21, '2018-09-28'),
+(62, 'Baila Baila Baila', 21, 21, '2019-04-05'),
+(63, 'Te Boté', 21, 21, '2018-04-13'),
+(64, 'No Woman, No Cry', 22, 22, '1974-10-25'),
+(65, 'Three Little Birds', 22, 22, '1977-05-12'),
+(66, 'Buffalo Soldier', 22, 22, '1983-05-23'),
+(67, 'Welcome to Jamrock', 23, 23, '2005-09-12'),
+(68, 'Affairs of the Heart', 23, 23, '2012-04-17'),
+(69, 'Patience', 23, 23, '2012-04-20'),
+(70, 'Love Is My Religion', 24, 24, '2006-07-02'),
+(71, 'Beach in Hawaii', 24, 24, '2006-07-02'),
+(72, 'True to Myself', 24, 24, '2003-03-11'),
+(73, 'Vivir Mi Vida', 25, 25, '2013-07-15'),
+(74, 'Valió la Pena', 25, 25, '2004-04-13'),
+(75, 'Flor Pálida', 25, 25, '2013-10-15'),
+(76, 'La Vida Es Un Carnaval', 26, 26, '1998-06-02'),
+(77, 'Quimbara', 26, 26, '1974-07-03'),
+(78, 'Ríe Y Llora', 26, 26, '2003-08-05'),
+(79, 'El Cantante', 27, 27, '1978-07-18'),
+(80, 'Periódico de Ayer', 27, 27, '1976-01-01'),
+(81, 'Aguanilé', 27, 27, '1978-07-18'),
+(82, 'Oda a la Alegría', 28, 28, '1824-05-07'),
+(83, 'Para Elisa', 28, 28, '1810-04-27'),
+(84, 'Claro de Luna', 28, 28, '1801-08-14'),
+(85, 'Requiem', 29, 29, '1791-12-05'),
+(86, 'Pequeña Serenata Nocturna', 29, 29, '1787-08-10'),
+(87, 'Sinfonía No. 40', 29, 29, '1788-07-25'),
+(88, 'Conciertos de Brandeburgo', 30, 30, '1721-03-24'),
+(89, 'El Arte de la Fuga', 30, 30, '1751-07-01'),
+(90, 'Tocata y Fuga', 30, 30, '1708-01-01');
+
+
+-- Datos para la tabla Canciones_Lista_Reproduccion
+INSERT INTO Canciones_Lista_Reproduccion (Canciones_ID_Cancion, Listas_Reproduccion_ID) VALUES 
+(1, 1),
+(4, 1),
+(19, 1),
+(37, 1),
+(46, 1),
+(2, 2),
+(5, 2),
+(20, 2),
+(38, 2),
+(47, 2);
+
+
+INSERT INTO Listas_de_Reproduccion (ID_Lista, Nombre_Lista, Usuario_ID_Usuario) VALUES
+(1, 'Hip-Hop Hits', 1),
+(2, 'Latin Vibes', 1),
+(3, 'Pop Essentials', 1),
+(4, 'Classics', 1),
+(5, 'Electronic Beats', 1),
+(6, 'Reggae Rhythms', 1);
+
+
+INSERT INTO Canciones_Lista_Reproduccion (Canciones_ID_Cancion, Listas_Reproduccion_ID) VALUES
+-- Hip-Hop Hits
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(9, 1),
+(10, 1),
+(11, 1),
+(12, 1),
+(13, 1),
+(14, 1),
+(15, 1),
+(16, 1),
+(17, 1),
+(18, 1),
+
+-- Latin Vibes
+(55, 2),
+(56, 2),
+(57, 2),
+(58, 2),
+(59, 2),
+(60, 2),
+(61, 2),
+(62, 2),
+(63, 2),
+(73, 2),
+(74, 2),
+(75, 2),
+(76, 2),
+(77, 2),
+(78, 2),
+(79, 2),
+(80, 2),
+(81, 2),
+
+-- Pop Essentials
+(46, 3),
+(47, 3),
+(48, 3),
+(49, 3),
+(50, 3),
+(51, 3),
+(52, 3),
+(53, 3),
+(54, 3),
+
+-- Classics
+(28, 4),
+(29, 4),
+(30, 4),
+(31, 4),
+(32, 4),
+(33, 4),
+(34, 4),
+(35, 4),
+(36, 4),
+(82, 4),
+(83, 4),
+(84, 4),
+(85, 4),
+(86, 4),
+(87, 4),
+(88, 4),
+(89, 4),
+(90, 4),
+
+-- Electronic Beats
+(37, 5),
+(38, 5),
+(39, 5),
+(40, 5),
+(41, 5),
+(42, 5),
+(43, 5),
+(44, 5),
+(45, 5),
+
+-- Reggae Rhythms
+(64, 6),
+(65, 6),
+(66, 6),
+(67, 6),
+(68, 6),
+(69, 6),
+(70, 6),
+(71, 6),
+(72, 6);
+
+
+-- Cargar archivos de audio en la columna Audio
+UPDATE Canciones SET Audio = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/audios/audio1.mp3') WHERE ID_Cancion = 1;
+UPDATE Canciones SET Audio = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/audios/audio2.mp3') WHERE ID_Cancion = 2;
+UPDATE Canciones SET Audio = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/audios/audio3.mp3') WHERE ID_Cancion = 3;
+UPDATE Canciones SET Audio = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/audios/audio4.mp3') WHERE ID_Cancion = 4;
+UPDATE Canciones SET Audio = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/audios/audio5.mp3') WHERE ID_Cancion = 5;
+UPDATE Canciones SET Audio = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/audios/audio6.mp3') WHERE ID_Cancion = 6;
+UPDATE Canciones SET Audio = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/audios/audio7.mp3') WHERE ID_Cancion = 7;
+UPDATE Canciones SET Audio = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/audios/audio8.mp3') WHERE ID_Cancion = 8;
+SELECT ID_Cancion, LENGTH(Audio) FROM Canciones WHERE Audio IS NOT NULL;
+
+-- End of file.
+
+
